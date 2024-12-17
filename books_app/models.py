@@ -14,7 +14,7 @@ class Book(models.Model):
 
     @property
     def inventory(self):
-        return Book.objects.filter(self.title).count()
+        return Book.objects.filter(title=self.title).count()
 
     def __str__(self):
         return (
