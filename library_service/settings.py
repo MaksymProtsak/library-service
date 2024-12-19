@@ -164,4 +164,5 @@ SPECTACULAR_SETTINGS = {
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=15),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
+    "AUTH_HEADER_NAME": "HTTP_AUTHORIZE",
 }
