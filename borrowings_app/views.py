@@ -1,11 +1,18 @@
 from rest_framework import viewsets
+from rest_framework import generics, mixins, views
+from rest_framework.viewsets import GenericViewSet
 
 from django.shortcuts import render
 
 from borrowings_app.models import Borrowing
-from borrowings_app.serializers import BorrowSerializer
+from borrowings_app.serializers import BorrowSerializer, ReadBorrowSerializer
 
 
-class BorrowViewSet(viewsets.ModelViewSet):
+class BorrowViewSet(
+    mixins.CreateModelMixin,
+    mixins.RetrieveModelMixin,
+    mixins.ListModelMixin,
+    GenericViewSet,
+):
     queryset = Borrowing.objects.all()
-    serializer_class = BorrowSerializer
+    serializer_class = ReadBorrowSerializer
