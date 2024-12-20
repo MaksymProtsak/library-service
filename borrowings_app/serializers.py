@@ -13,3 +13,7 @@ class BorrowSerializer(serializers.ModelSerializer):
             "book_id",
             "user_id",
         )
+
+
+class ReadBorrowSerializer(BorrowSerializer):
+    ...
