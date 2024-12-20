@@ -37,11 +37,12 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "books_app",
     "rest_framework",
     "rest_framework.authtoken",
-    "user",
     "drf_spectacular",
+    "books_app",
+    "user",
+    "borrowings_app",
 ]
 
 MIDDLEWARE = [
