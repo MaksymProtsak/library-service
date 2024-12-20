@@ -15,4 +15,9 @@ class BorrowViewSet(
     GenericViewSet,
 ):
     queryset = Borrowing.objects.all()
-    serializer_class = ReadBorrowSerializer
+    serializer_class = BorrowSerializer
+
+    def get_serializer_class(self):
+        if self.action == "retrieve":
+            return ReadBorrowSerializer
+        return self.serializer_class
