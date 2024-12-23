@@ -13,10 +13,13 @@ class Book(models.Model):
     daily_fee = models.DecimalField(max_digits=5, decimal_places=2)
     inventory = models.IntegerField(default=1)
 
-    def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
+    def update_inventory(self):
         count = Book.objects.filter(title=self.title).count()
         Book.objects.filter(title=self.title).update(inventory=count)
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        self.update_inventory()
 
     def __str__(self):
         return (
