@@ -11,10 +11,12 @@ class Book(models.Model):
     author = models.CharField(max_length=255)
     cover = models.CharField(max_length=4, choices=COVER_CHOICES)
     daily_fee = models.DecimalField(max_digits=5, decimal_places=2)
+    inventory = models.IntegerField(default=1)
 
-    @property
-    def inventory(self):
-        return Book.objects.filter(title=self.title).count()
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        count = Book.objects.filter(title=self.title).count()
+        Book.objects.filter(title=self.title).update(inventory=count)
 
     def __str__(self):
         return (
