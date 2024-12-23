@@ -14,7 +14,6 @@ class BorrowSerializer(serializers.ModelSerializer):
             "borrow_date",
             "expected_return_date",
             "book",
-            "user",
         )
 
 
