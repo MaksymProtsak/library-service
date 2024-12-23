@@ -1,8 +1,5 @@
-from rest_framework import viewsets
-from rest_framework import generics, mixins, views
+from rest_framework import mixins
 from rest_framework.viewsets import GenericViewSet
-
-from django.shortcuts import render
 
 from borrowings_app.models import Borrowing
 from borrowings_app.serializers import BorrowSerializer, ReadBorrowSerializer
@@ -24,4 +21,3 @@ class BorrowViewSet(
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
-
