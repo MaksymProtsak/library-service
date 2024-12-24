@@ -1,5 +1,7 @@
 from django.contrib.auth import get_user_model
+
 from rest_framework import serializers
+from rest_framework.exceptions import ValidationError
 
 from books_app.models import Book
 from books_app.serializers import BookSerializer
@@ -17,12 +19,19 @@ class BorrowSerializer(serializers.ModelSerializer):
         )
 
     def create(self, validated_data):
-        count = Book.objects.filter(title=validated_data["book"].title).count()
-        book_inventory = Book.objects.filter(title=validated_data["book"].inventory)
+        books = Book.objects.filter(title=validated_data["book"].title)
+        book_inventory = books.first().inventory
         if book_inventory:
-            Book.objects.filter(title=validated_data["book"].title).update(inventory=count - 1)
+            books.update(inventory=book_inventory - 1)
             return Borrowing.objects.create(**validated_data)
-        raise ValueError("Book not found") # Need to use validate method from Borrowing model
+        raise ValueError("Book not found")
+
+    def validate(self, attrs):
+        data = super(BorrowSerializer, self).validate(attrs=attrs)
+        errors = Borrowing.validate_borrow(attrs)
+        if errors:
+            raise ValidationError(errors)
+        return data
 
 
 class PartialUserSerializer(serializers.ModelSerializer):
@@ -34,3 +43,6 @@ class PartialUserSerializer(serializers.ModelSerializer):
 class ReadBorrowSerializer(BorrowSerializer):
     book = BookSerializer(read_only=True)
     user = PartialUserSerializer(read_only=True,)
+
+    class Meta(BorrowSerializer.Meta):
+        fields = BorrowSerializer.Meta.fields + ("user",)
