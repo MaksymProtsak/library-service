@@ -1,4 +1,3 @@
-from django.contrib.auth import get_user_model
 from django.db import models
 from django.conf import settings
 
@@ -10,3 +9,12 @@ class Borrowing(models.Model):
     expected_return_date = models.DateField()
     book = models.ForeignKey(Book, on_delete=models.CASCADE)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+
+    @staticmethod
+    def validate_borrow(attrs: dict) -> dict:
+        errors = {}
+        if attrs["book"].inventory == 0:
+            errors["out_of_stock"] = (
+                f"The book '{attrs["book"].title}' is out of stock."
+            )
+        return errors
