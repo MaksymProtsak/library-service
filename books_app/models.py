@@ -24,5 +24,6 @@ class Book(models.Model):
     def __str__(self):
         return (
             f"{self.title} by {self.author} "
-            f"({self.get_cover_display()}) - ${self.daily_fee}/day"
+            f"({self.get_cover_display()}) - ${self.daily_fee}/day "
+            f"(in stock: {self.inventory})"
         )
