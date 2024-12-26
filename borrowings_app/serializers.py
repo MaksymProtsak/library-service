@@ -45,7 +45,7 @@ class ReadBorrowingSerializer(BorrowingSerializer):
     user = PartialUserSerializer(read_only=True,)
 
     class Meta(BorrowingSerializer.Meta):
-        fields = BorrowingSerializer.Meta.fields + ("user",)
+        fields = BorrowingSerializer.Meta.fields + ("actual_return_date", "user",)
 
 
 class BorrowingListSerializer(serializers.ModelSerializer):
