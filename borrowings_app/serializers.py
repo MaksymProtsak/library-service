@@ -8,7 +8,7 @@ from books_app.serializers import BookSerializer
 from borrowings_app.models import Borrowing
 
 
-class BorrowSerializer(serializers.ModelSerializer):
+class BorrowingSerializer(serializers.ModelSerializer):
     class Meta:
         model = Borrowing
         fields = (
@@ -27,7 +27,7 @@ class BorrowSerializer(serializers.ModelSerializer):
         raise ValueError("Book not found")
 
     def validate(self, attrs):
-        data = super(BorrowSerializer, self).validate(attrs=attrs)
+        data = super(BorrowingSerializer, self).validate(attrs=attrs)
         errors = Borrowing.validate_borrow(attrs)
         if errors:
             raise ValidationError(errors)
@@ -40,14 +40,14 @@ class PartialUserSerializer(serializers.ModelSerializer):
         fields = ("id", "username", "email")
 
 
-class ReadBorrowSerializer(BorrowSerializer):
+class ReadBorrowingSerializer(BorrowingSerializer):
     book = BookSerializer(read_only=True)
     user = PartialUserSerializer(read_only=True,)
 
-    class Meta(BorrowSerializer.Meta):
-        fields = BorrowSerializer.Meta.fields + ("user",)
+    class Meta(BorrowingSerializer.Meta):
+        fields = BorrowingSerializer.Meta.fields + ("user",)
 
 
 class BorrowingListSerializer(serializers.ModelSerializer):
-    class Meta(BorrowSerializer.Meta):
-        fields = BorrowSerializer.Meta.fields + ("actual_return_date",)
+    class Meta(BorrowingSerializer.Meta):
+        fields = BorrowingSerializer.Meta.fields + ("actual_return_date",)
