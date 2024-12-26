@@ -35,10 +35,16 @@ class BorrowingViewSet(
         serializer.save(user=self.request.user)
 
     def get_queryset(self):
-        if self.request.user.is_staff:
-            return Borrowing.objects.all()
+        queryset = Borrowing.objects.all()
+        is_active = self.request.query_params.get("is_active")
+        user_id = self.request.query_params.get("user_id")
 
-        return Borrowing.objects.filter(user=self.request.user)
+        if is_active == "True":
+            queryset = queryset.filter(actual_return_date__isnull=True)
+        if self.request.user.is_staff:
+            return queryset
+
+        return queryset.filter(user=self.request.user)
 
     @action(
         methods=["POST"],
