@@ -51,7 +51,7 @@ class ReadBorrowingSerializer(BorrowingSerializer):
 
 class BorrowingListSerializer(serializers.ModelSerializer):
     class Meta(BorrowingSerializer.Meta):
-        fields = BorrowingSerializer.Meta.fields + ("actual_return_date",)
+        fields = BorrowingSerializer.Meta.fields + ("actual_return_date", "user",)
 
 
 class BorrowingReturnSerializer(serializers.ModelSerializer):
@@ -60,6 +60,8 @@ class BorrowingReturnSerializer(serializers.ModelSerializer):
         fields = ("id",)
 
     def update(self, instance, validated_data):
+        if instance.actual_return_date:
+            raise ValidationError({"errors": "The book already returned."})
         instance.actual_return_date = now().date()
         instance.save()
         book = Book.objects.get(id=instance.book_id)
