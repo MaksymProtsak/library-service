@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from django.utils.timezone import now
 
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
@@ -51,3 +52,16 @@ class ReadBorrowingSerializer(BorrowingSerializer):
 class BorrowingListSerializer(serializers.ModelSerializer):
     class Meta(BorrowingSerializer.Meta):
         fields = BorrowingSerializer.Meta.fields + ("actual_return_date",)
+
+
+class BorrowingReturnSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Borrowing
+        fields = ("id",)
+
+    def update(self, instance, validated_data):
+        instance.actual_return_date = now().date()
+        instance.save()
+        book = Book.objects.get(id=instance.book_id)
+        Book.objects.filter(title=book.title).update(inventory=book.inventory + 1)
+        return instance
