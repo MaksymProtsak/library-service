@@ -46,3 +46,8 @@ class ReadBorrowSerializer(BorrowSerializer):
 
     class Meta(BorrowSerializer.Meta):
         fields = BorrowSerializer.Meta.fields + ("user",)
+
+
+class BorrowingListSerializer(serializers.ModelSerializer):
+    class Meta(BorrowSerializer.Meta):
+        fields = BorrowSerializer.Meta.fields + ("actual_return_date",)
