@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     "books_app",
     "user",
     "borrowings_app",
+    "django_extensions",
 ]
 
 MIDDLEWARE = [
