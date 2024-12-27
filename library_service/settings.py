@@ -37,11 +37,12 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "books_app",
     "rest_framework",
     "rest_framework.authtoken",
-    "user",
     "drf_spectacular",
+    "books_app",
+    "user",
+    "borrowings_app",
 ]
 
 MIDDLEWARE = [
@@ -133,7 +134,7 @@ REST_FRAMEWORK = {
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
     "DEFAULT_PERMISSION_CLASSES": (
-        "books_app.permissions.IsAdminOrIfAuthenticatedReadOnly",
+        "books_app.permissions.IsAdminOrAnyUserReadOnly",
     ),
 
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
