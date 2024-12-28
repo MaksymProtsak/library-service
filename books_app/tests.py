@@ -13,7 +13,7 @@ from decimal import Decimal
 BOOK_URL = reverse("books_app:book-list")
 
 
-def sample_airplane(**params) -> Book:
+def sample_book(**params) -> Book:
     defaults = {
         "title": "Harry Potter and the Philosopher's Stone",
         "author": "Joanne Rowling",
@@ -43,7 +43,7 @@ class AuthenticatedBookApiTests(TestCase):
         self.client.force_authenticate(self.user)
 
     def test_book_list(self):
-        sample_airplane()
+        sample_book()
         books = Book.objects.all()
         serializer = BookListSerializer(books, many=True)
         res = self.client.get(BOOK_URL)
