@@ -56,7 +56,7 @@ class AuthenticatedBorrowingApiTests(TestCase):
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(res.data, serializer.data)
 
-    def test_create_borrowing_allowed(self):
+    def test_create_borrowing_allowed_and_forbidden(self):
         book = sample_book()
         user = get_user_model().objects.first()
         now_date = now().date()
@@ -70,3 +70,12 @@ class AuthenticatedBorrowingApiTests(TestCase):
         }
         res = self.client.post(path=AIRPLANE_URL, data=payload)
         self.assertEqual(res.status_code, status.HTTP_201_CREATED)
+
+        res = self.client.post(path=AIRPLANE_URL, data=payload)
+        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(
+            res.data.get("out_of_stock")[0],
+            f"The book '{book.title}' is out of stock."
+        )
+
+
