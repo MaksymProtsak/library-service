@@ -17,6 +17,7 @@ class BorrowingSerializer(serializers.ModelSerializer):
             "borrow_date",
             "expected_return_date",
             "book",
+            "user",
         )
 
     def create(self, validated_data):
