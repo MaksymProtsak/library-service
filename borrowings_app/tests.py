@@ -12,7 +12,11 @@ from books_app.serializers import BookSerializer
 from books_app.tests import sample_book
 from borrowings_app.models import Borrowing
 from books_app.models import Book
-from borrowings_app.serializers import BorrowingListSerializer, BorrowingSerializer, ReadBorrowingSerializer
+from borrowings_app.serializers import (
+    BorrowingListSerializer,
+    BorrowingSerializer,
+    ReadBorrowingSerializer
+)
 
 BORROWING_LIST_URL = reverse("borrowings_app:borrowing-list")
 BORROWING_DETAIL_URL = reverse("borrowings_app:borrowing-detail", kwargs={"pk": 1})
@@ -159,3 +163,6 @@ class AuthenticatedBorrowingApiTests(TestCase):
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(book.inventory, book_inventory_after_return)
 
+        res = self.client.post(path=r_path, data={}, )
+        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(res.data["errors"], "The book already returned.")
