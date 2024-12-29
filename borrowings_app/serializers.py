@@ -44,15 +44,21 @@ class PartialUserSerializer(serializers.ModelSerializer):
 
 class ReadBorrowingSerializer(BorrowingSerializer):
     book = BookSerializer(read_only=True)
-    user = PartialUserSerializer(read_only=True,)
+    user = PartialUserSerializer(read_only=True, )
 
     class Meta(BorrowingSerializer.Meta):
-        fields = BorrowingSerializer.Meta.fields + ("actual_return_date", "user",)
+        fields = BorrowingSerializer.Meta.fields + (
+            "actual_return_date",
+            "user",
+        )
 
 
 class BorrowingListSerializer(serializers.ModelSerializer):
     class Meta(BorrowingSerializer.Meta):
-        fields = BorrowingSerializer.Meta.fields + ("actual_return_date", "user",)
+        fields = BorrowingSerializer.Meta.fields + (
+            "actual_return_date",
+            "user",
+        )
 
 
 class BorrowingReturnSerializer(serializers.ModelSerializer):
@@ -66,5 +72,7 @@ class BorrowingReturnSerializer(serializers.ModelSerializer):
         instance.actual_return_date = now().date()
         instance.save()
         book = Book.objects.get(id=instance.book_id)
-        Book.objects.filter(title=book.title).update(inventory=book.inventory + 1)
+        Book.objects.filter(title=book.title).update(
+            inventory=book.inventory + 1
+        )
         return instance

@@ -19,7 +19,10 @@ from borrowings_app.serializers import (
 )
 
 BORROWING_LIST_URL = reverse("borrowings_app:borrowing-list")
-BORROWING_DETAIL_URL = reverse("borrowings_app:borrowing-detail", kwargs={"pk": 1})
+BORROWING_DETAIL_URL = reverse(
+    viewname="borrowings_app:borrowing-detail",
+    kwargs={"pk": 1}
+)
 
 
 def get_first_user():
@@ -130,7 +133,7 @@ class AuthenticatedBorrowingApiTests(TestCase):
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(
             res.data.get("borrow_date")[0],
-            f"Borrowing a book in the past is not allowed."
+            "Borrowing a book in the past is not allowed."
         )
         payload["borrow_date"] = now_date
         payload["expected_return_date"] = now_date - datetime.timedelta(days=1)
@@ -138,7 +141,7 @@ class AuthenticatedBorrowingApiTests(TestCase):
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(
             res.data.get("expected_return_date")[0],
-            f"The return date cannot be earlier than the borrow date."
+            "The return date cannot be earlier than the borrow date."
         )
 
     def test_retrieve_borrowing(self):
@@ -166,3 +169,40 @@ class AuthenticatedBorrowingApiTests(TestCase):
         res = self.client.post(path=r_path, data={}, )
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(res.data["errors"], "The book already returned.")
+
+
+class AdminBorrowingTests(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+        self.user = get_user_model().objects.create_user(
+            email="admin@admin.com",
+            password="testpassword",
+            is_staff=True,
+        )
+        self.client.force_authenticate(self.user)
+
+    def test_admin_filter_by_user_id(self):
+        user_1 = get_user_model().objects.create(
+            email="testuser1@test.com",
+            password="TestPassword"
+        )
+        user_2 = get_user_model().objects.create(
+            email="testuser2@test.com",
+            password="TestPassword"
+        )
+        sample_borrowing(user=user_1.id)
+        sample_borrowing(user=user_2.id)
+        borrowings = Borrowing.objects.all()
+        serializer = BorrowingListSerializer(borrowings, many=True)
+        res = self.client.get(BORROWING_LIST_URL,)
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertEqual(res.data, serializer.data)
+
+        borrowings_filtered = borrowings.filter(user_id=user_2.id)
+        serializer_filtered = BorrowingListSerializer(
+            borrowings_filtered,
+            many=True
+        )
+        res = self.client.get(BORROWING_LIST_URL, data={"user_id": user_2.id})
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertEqual(res.data, serializer_filtered.data)
