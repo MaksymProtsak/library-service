@@ -153,8 +153,8 @@ REST_FRAMEWORK = {
 }
 
 SPECTACULAR_SETTINGS = {
-    "TITLE": "Airport Service API",
-    "DESCRIPTION": "Order airport tickets",
+    "TITLE": "Library Service API",
+    "DESCRIPTION": "Borrowing books in library",
     "VERSION": "1.0.0",
     "SERVE_INCLUDE_SCHEMA": False,
     "SWAGGER_UI_SETTINGS": {
