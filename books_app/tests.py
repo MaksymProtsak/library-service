@@ -85,8 +85,8 @@ class AdminBookTests(TestCase):
         book_author = payload["author"]
         book_cover = payload["cover"].lower().capitalize()
         book_daily_fee = Decimal(
-            payload['daily_fee']
-        ).quantize(Decimal('1.00'))
+            payload["daily_fee"]
+        ).quantize(Decimal("1.00"))
 
         self.assertEqual(res.status_code, status.HTTP_201_CREATED)
         self.assertEqual(book.title, payload["title"])
