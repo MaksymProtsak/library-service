@@ -23,8 +23,9 @@ class Borrowing(models.Model):
         expected_return_date = attrs["expected_return_date"]
 
         if attrs["book"].inventory == 0:
+            book_title = attrs["book"].title
             errors["out_of_stock"] = (
-                f"The book '{attrs["book"].title}' is out of stock."
+                f"The book '{book_title}' is out of stock."
             )
         if now_date > borrow_date:
             errors["borrow_date"] = (
