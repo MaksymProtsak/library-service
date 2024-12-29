@@ -10,7 +10,10 @@ class Borrowing(models.Model):
     expected_return_date = models.DateField()
     actual_return_date = models.DateField(blank=True, null=True)
     book = models.ForeignKey(Book, on_delete=models.CASCADE)
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE
+    )
 
     @staticmethod
     def validate_borrow(attrs: dict) -> dict:
@@ -24,8 +27,12 @@ class Borrowing(models.Model):
                 f"The book '{attrs["book"].title}' is out of stock."
             )
         if now_date > borrow_date:
-            errors["borrow_date"] = "Borrowing a book in the past is not allowed."
+            errors["borrow_date"] = (
+                "Borrowing a book in the past is not allowed."
+            )
         if not (borrow_date < expected_return_date):
-            errors["expected_return_date"] = "The return date cannot be earlier than the borrow date."
+            errors["expected_return_date"] = (
+                "The return date cannot be earlier than the borrow date."
+            )
 
         return errors
